@@ -1,0 +1,24 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+      - name: vgcreate
+        lvg:
+            vg: vgdata
+            pvs: /dev/sda5,/dev/sda6
+      - name: lvcreate
+        lvol:
+            vg: vgdata
+            lv: dataone
+            size: 1500M
+      - name: create file system
+        filesystem:
+             fstype: ext4
+             dev: /dev/vgdata/dataone
+      - name: mount logical volume
+        mount:
+             name: /lvdata
+             src: /dev/vgdata/dataone
+             fstype: ext4
+             state: mounted
+
